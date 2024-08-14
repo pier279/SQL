@@ -27,3 +27,79 @@ time_signature integer NOT NULL
 #Then I inserted the Spotify Data .csv into the table.
 
 #Next, I explored the data using the following SQL.
+
+-- 1. Which songs have a time signature other than 4/4, and what is the time signature and who is the artist?
+
+SELECT track_name, artist_name, time_signature
+FROM BIT_DB.Spotifydata
+WHERE time_signature <> 4
+;
+
+-- 2. Which tracks have a loudness level above -4 dB?
+
+SELECT track_name, artist_name, loudness
+FROM BIT_DB.Spotifydata
+WHERE loudness > -4
+;
+
+-- 3. What is the average tempo of tracks with a danceability score greater than 75%?
+
+SELECT ROUND(AVG(tempo), 2) AS "Average tempo "
+FROM BIT_DB.Spotifydata
+WHERE danceability > 0.75
+;
+
+-- 4. Which tracks have both a high tempo (greater than 120 BPM) and high danceability (greater than 80%)?
+
+SELECT artist_name AS "Artist Name", track_name AS "Track Name", ROUND(tempo, 2) AS "Tempo", ROUND(danceability * 100, 2) AS "Danceability %"
+FROM BIT_DB.Spotifydata
+WHERE tempo > 120
+AND danceability > 0.80
+;
+
+-- 5. Which tracks have a duration of less than 3 minutes (180,000 milliseconds)? And what is the duration?
+
+SELECT 
+artist_name AS "Artist Name", 
+track_name AS "Track Name", 
+ROUND(duration_ms / 60000.0, 2) AS "Duration (minutes)"
+FROM BIT_DB.Spotifydata
+WHERE duration_ms < 180000
+ORDER BY duration_ms
+;
+
+-- 6. Which 10 tracks have the highest speechiness scores, indicating the most spoken word content?
+
+SELECT 
+track_name AS "Track Name",
+artist_name AS "Artist Name",
+speechiness AS "Spoken Word Content"
+FROM BIT_DB.Spotifydata
+ORDER BY speechiness DESC
+LIMIT 10;
+
+-- 7. Which songs are written in F Major (song_key = 11)? List in order of popularity.
+
+SELECT
+track_name AS "Songs written in F Major",
+artist_name AS "Artist Name",
+popularity AS "Popularity Score"
+FROM BIT_DB.Spotifydata
+WHERE song_key = 11
+ORDER BY popularity DESC;
+
+-- 8. What are the top 5 most danceable tracks with a valence score greater than 0.7, indicating that they are the most cheerful songs?
+
+SELECT
+    artist_name AS "Artist Name",
+    track_name AS "Song",
+    ROUND(danceability * 100, 1) AS "Danceability (%)",
+    ROUND(valence * 100, 1) AS "Cheerfulness (%)"
+FROM
+    BIT_DB.Spotifydata
+WHERE
+    valence > 0.7
+ORDER BY
+    danceability DESC
+LIMIT 5;
+
